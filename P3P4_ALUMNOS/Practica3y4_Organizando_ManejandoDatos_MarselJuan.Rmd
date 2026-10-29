@@ -203,8 +203,10 @@ Para convertir este conjunto a formato *tidy* tendremos que agrupar todas las co
 Convierte el dataset `pew_religion` a formato *tidy* usando `gather`. La columna `income` debe contener una variable de tipo `factor`.
 
 ```{r}
-
-
+library(magrittr)
+pew_religion %<>% gather(key = 'income', value = 'freq', -religion)
+pew_religion$income <- factor(pew_religion$income)
+head(pew_religion)
 ```
 
 Otro ejemplo usando el conjunto de datos `Billboard` que muestra cuando una canción entró en el top 100.
@@ -225,8 +227,8 @@ Obtén la versión *tidy* de este conjunto de datos usando `pivot_longer`.
 Consejo: puedes eliminar el prefijo `wk` de las semanas mediante el argumento `names_prefix`. Opcionalmente puedes crear una columna `date` a partir de `date.entered`, sumando las semanas transcurridas desde la fecha de entrada en lista.
 
 ```{r}
-
-
+raw %<>% pivot_longer(col = wk1:wk76, names_to='week', values_to='rank', names_prefix = 'wk')
+head(raw)
 ```
 
 ## Varias variables en una misma columna
@@ -247,7 +249,13 @@ Para pasar a formato *tidy* necesitamos realizar dos operaciones en este caso. E
 Convierte el conjunto de datos TB en *tidy* utilizando `gather` y `separate`.
 
 ```{r}
+raw %<>% gather(key = 'sexo.edad', value = 'casos', -c(country, year))
+head(raw)
+```
 
+```{r}
+raw %<>% separate(sexo.edad, into = c('sexo', 'edad'), sep=1)
+head(raw)
 ```
 
 ## Variables almacenadas tanto en filas como en columnas
@@ -268,8 +276,12 @@ Para obtener la versión *tidy* primero juntamos todos los días en una variable
 Obtén la versión *tidy* del conjunto de datos `weather` utilizando las funciones `pivot_longer` y `pivot_wider`. Además cambiaremos las columnas `year`, `month` y `dia` por una única variable `fecha`. Para que la operación `pivot_wider` no de error tendremos que eliminar los NA's cuando usemos `pivot_longer`.
 
 ```{r}
-
-
+raw %<>% pivot_longer(col = d1:d31, names_to = 'dia', values_to = 'observacion', names_prefix = 'd')
+raw %<>% spread(key = element, value = observacion)
+library(lubridate)
+raw$date <- ymd(apply(raw[,c('year', 'month', 'dia')], FUN = function(x) paste0(as.vector(x), collapse='-'), MARGIN = 1))
+raw %<>% select(-year, -month, -dia)
+head(raw)
 ```
 
 # DPLYR
