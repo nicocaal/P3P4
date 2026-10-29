@@ -381,7 +381,7 @@ Existen variables que, a priori, no tienen demasiado interés para el estudio qu
 - En el data frame `planes` quédate con todas las variables excepto `speed` y `type`.
 
 ```{r }
-flights <- flights %>% select(-time_hour & -ends_with('time')) 
+flights <- flights %>% select(-time_hour, -ends_with('time')) 
 planes <- planes %>% select(-speed, -type)
 ```
 
@@ -390,8 +390,8 @@ planes <- planes %>% select(-speed, -type)
 Incorpora una nueva variable a `flights` denominado `Full_Date` que sea de tipo `character` que incorpore una cadena de texto de la forma `d-m-Y`. Donde `d` indica día, `m` mes e `Y` año, a partir de la información incluida en el data frame. Utiliza una función de **DPLYR** que permita conseguir este propósito. Elimina las variables originales involucradas en la creación de la nueva variable.
 
 ```{r }
-flights %<>% mutate(Full_Date = paste0(day, month, year, collapse = ''))
-
+flights %<>% mutate(Full_Date = paste(day, month, year, sep = "-"))
+flights %<>% select(-day, -month, -year)
 ```
 
 ### Ejercicio 11
@@ -399,7 +399,7 @@ flights %<>% mutate(Full_Date = paste0(day, month, year, collapse = ''))
 Utilizando las funciones `group_by`, `summarise` y `filter`, crea un data frame donde se calcule el número de vuelos (`Num_flights`), la distancia media recorrida (`Mean_distance`) y la distancia total recorrida (`Total_distance`) para cada uno de los aviones (`tailnum`) presentes en el conjunto `flights`. Descarta aquellos registros del data frame en los que la variable `tailnum` tenga un valor NA. Utiliza el operador pipe para enlazar las funciones. Almacena el data frame en una variable denominada `Distances_plane`.
 
 ```{r }
-
+Distances_plane <- flights %>% filter(!is.na(tailnum)) %>% group_by(tailnum) %>% summarize(Num_flights = n(), Mean_distance = mean(distance), Total_distance = sum(distance))
 ```
 
 # Ejercicios Extra
