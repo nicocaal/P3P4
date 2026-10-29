@@ -460,7 +460,6 @@ Consigue un data frame denominado `Distance_Manufacturer_model` que contenga 4 c
 Queremos averiguar si existe algún tipo de relación entre el retraso de los vuelos (llegada y salida) y el fabricante. Para ello queremos calcular el retraso medio en la llegada y en la salida de los vuelos (cuando se disponga de esos datos) para cada uno de los fabricantes (`manufacturer`). Propón la estrategia (y el código) a emplear para conseguir proporcionar un data frame ordenado del retraso en la llegada y la salida para cada uno de los fabricantes. ¿Cuáles son los dos fabricantes de aviones que más se retrasan en las salidas? ¿Y en las llegadas?
 
 ```{r }
-
 ```
 
 ```{r }
