@@ -415,9 +415,13 @@ Separa los datos *tidy* que teníamos en el ejercicio 2 en dos tablas (data fram
 Opcionalmente se puede crear un identificador, `id`, asociado al nombre de la canción (`track`), y en la tabla de ranking solo usaremos este identificador en lugar del nombre de la canción.
 
 ```{r}
+load('data/billboard.Rdata')
+head(raw[, 1:12])
+raw %<>% pivot_longer(col = wk1:wk76, names_to='week', values_to='rank', names_prefix = 'wk')
+head(raw)
 
-
-
+bb1 <- raw %>% select(artist, track, time) %>% unique
+bb2 <- raw %>% select(track, rank, date.entered, week)
 ```
 
 ## TidyR. Una única unidad de observación almacenada en varias tablas
