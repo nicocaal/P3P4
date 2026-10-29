@@ -280,7 +280,8 @@ raw %<>% pivot_longer(col = d1:d31, names_to = 'dia', values_to = 'observacion',
 raw %<>% spread(key = element, value = observacion)
 library(lubridate)
 raw$date <- ymd(apply(raw[,c('year', 'month', 'dia')], FUN = function(x) paste0(as.vector(x), collapse='-'), MARGIN = 1))
-raw %<>% select(-year, -month, -dia)
+raw <- raw %>% select(-year, -month, -dia) %>% arrange(date)
+
 head(raw)
 ```
 
@@ -326,8 +327,13 @@ load("./data/VuelosNY.Rdata")
 Muestra las primeras muestras de ambos data frames para hacerte una idea de las variables que contienen. ¿Qué diferencia existe entre la información mostrada en ambos data frames?
 
 ```{r }
-
+head(flights)
+head(planes)
 ```
+
+En flights tenemos los datos de vuelos: en qué fecha se produjeron, cuál era el momento previsto de despegue y de aterrizaje, así como los momentos reales en los que se produjeron, el número de vuelo, operador, distancia de vuelo, etc.
+
+En planes está la información relativa a los aviones, el fabricante, modelo, número de motores, asientos, etc.
 
 ### Ejercicio 6
 
@@ -336,9 +342,17 @@ En nuestro estudio queremos aplicar una serie de criterios de exclusión sobre l
 - Nota: Revisar el uso de la función filter vista en clase y tener en cuenta los operadores de comparación: igual ==, distinto !=, mayor \>, mayor o igual \>=, menor \<, menor o igual \<=.
 
 ```{r }
+manuf.fact <- factor(planes$manufacturer)
+levels(manuf.fact) 
+# Este fabricante esta repetido 3 veces: posiciones 28, 29, 30
+mcd.doug <- levels(manuf.fact)[c(28, 29, 30)]
 
+planes.f <- planes %>% filter(!(manufacturer %in% mcd.doug) & seats < 210 & seats > 90)
 
-
+# Airbus esta 2 veces: posiciones 2 y 3
+airbus <- levels(manuf.fact)[c(2, 3)]
+airbus.name <- 'AIRBUS COMP'
+planes.f[planes.f$manufacturer %in% airbus, ]$manufacturer <- airbus.name
 ```
 
 ### Ejercicio 7
